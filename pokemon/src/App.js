@@ -14,12 +14,40 @@ function App() {
   const [limit, setLimit] = useState(20);
   const [offset, setOffset] = useState(1);
   const [pokemon, setPokemon] = useState("");
+  const [collection, setCollection] = useState("");
+  const [isCollectionPage, setIsCollectionPage] = useState(false);
   const { loading, error, data } = useQuery(getPokemonList, {
     variables: { limit: 20, offset: offset },
   });
   const clickPokemon = (name, image) => {
     setPokemon({ name: name, image: image });
+    setIsCollectionPage(false);
   };
+  const toList = () => {
+    setPokemon("");
+    setIsCollectionPage(false);
+  };
+  const toCollection = () => {
+    setIsCollectionPage(true);
+    setPokemon("");
+  };
+  const addCollection = (name, image) => {
+    setCollection([...collection, { name: name, image: image }]);
+  };
+  console.log(localStorage.pokemon);
+  console.log(collection);
+  useEffect(() => {
+    if (collection) {
+      localStorage.setItem("pokemon", JSON.stringify(collection));
+    }
+  }, [collection]);
+  // console.log(collection);
+  useEffect(() => {
+    if (localStorage.pokemon) {
+      // console.log(localStorage.pokemon);
+      setCollection(JSON.parse(localStorage.pokemon));
+    }
+  }, []);
   useEffect(() => {
     setOffset((page - 1) * 20 + 1);
   }, [page, limit]);
@@ -31,11 +59,11 @@ function App() {
   };
   // console.log(page);
   // console.log(data);
-  console.log(pokemon);
+  // console.log(pokemon);
   return (
     <div className="App bg-slate-100 min-h-screen">
-      <Nav />
-      {!pokemon && (
+      <Nav props={{ back: toList, collection: toCollection }} />
+      {!pokemon && !isCollectionPage && (
         <>
           {data ? (
             <>
@@ -61,7 +89,31 @@ function App() {
           )}
         </>
       )}
-      {pokemon && <PokeInfo props={{ pokemon: pokemon }} />}
+      {pokemon && !isCollectionPage && (
+        <PokeInfo
+          props={{
+            pokemon: pokemon,
+            addCollection: addCollection,
+            collection: collection,
+          }}
+        />
+      )}
+      {isCollectionPage && !pokemon && (
+        <>
+          {collection ? (
+            <PokeCard
+              props={{
+                data: collection,
+                click: clickPokemon,
+              }}
+            />
+          ) : (
+            <div className="text-center text-5xl w-screen max-h-screen">
+              <h1 className="my-36">You Do Not Have any Collection.</h1>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
