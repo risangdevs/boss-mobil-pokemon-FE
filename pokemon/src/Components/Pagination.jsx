@@ -6,7 +6,8 @@ export const Pagination = ({ props }) => {
     >
       <div className="hidden sm:block">
         <p className="text-sm text-gray-700">
-          Showing <span className="font-medium">{props.showedFirst}</span> to <span className="font-medium">{props.showedLast}</span> of{" "}
+          Showing <span className="font-medium">{props.showedFirst}</span> to{" "}
+          <span className="font-medium">{props.showedLast}</span> of{" "}
           <span className="font-medium">{props.total}</span> results
         </p>
       </div>

@@ -31,8 +31,11 @@ function App() {
     setIsCollectionPage(true);
     setPokemon("");
   };
-  const addCollection = (name, image) => {
-    setCollection([...collection, { name: name, image: image }]);
+  const addCollection = (name, image, nickname) => {
+    setCollection([
+      ...collection,
+      { name: name, image: image, nickname: nickname },
+    ]);
   };
   console.log(localStorage.pokemon);
   console.log(collection);
@@ -105,6 +108,7 @@ function App() {
               props={{
                 data: collection,
                 click: clickPokemon,
+                page:'collection'
               }}
             />
           ) : (
